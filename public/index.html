@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Multiple file upload</title>
+</head>
+
+<body>
+    <h1>Upload multiple files with fields</h1>
+
+    <form action="/api/v1/bulkload" method="post" enctype="multipart/form-data" id="form">
+        CollectionName: <input type="text" name="collection_name"><br>
+        PartitionName: <input type="text" name="partition_name"><br>
+        IsRowBased: <input type="radio" name="is_row_based" value=true checked="checked">True<br>
+        <input type="radio" name="is_row_based" value=false>False
+        Files: <input type="file" name="files" multiple><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+
+</html>
