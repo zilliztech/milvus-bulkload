@@ -12,19 +12,10 @@ _PORT = '19530'
 
 # Create a Milvus connection
 def create_connection():
-    retry = True
-    while retry:
-        try:
-            print(f"\nCreate connection...")
-            connections.connect(host=_HOST, port=_PORT)
-            retry = False
-        except Exception as e:
-            print("Cannot connect to Milvus. Error: " + str(e))
-            print(f"Cannot connect to Milvus. Trying to connect Again. Sleeping for: 1")
-            time.sleep(1)
-
-    print(f"\nList connections:")
-    print(connections.list_connections())
+    try:
+        connections.connect(host=_HOST, port=_PORT)
+    except Exception as e:
+        print("Cannot connect to Milvus. Error: " + str(e))
 
 
 # Get bulkload task state to check whether the data file has been parsed and persisted successfully.

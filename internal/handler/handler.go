@@ -2,8 +2,8 @@ package handler
 
 import (
 	"bulkload/internal/config"
+	"bulkload/internal/result"
 	"mime/multipart"
-	"net/http"
 	"path/filepath"
 
 	"github.com/gin-gonic/gin"
@@ -20,7 +20,7 @@ func HandleRequest(c *gin.Context) {
 	c.Bind(&opt)
 	form, err := c.MultipartForm()
 	if err != nil {
-		c.String(http.StatusBadRequest, "get form err: %s", err.Error())
+		c.JSON(500, result.Err.WithMsg(err.Error()))
 		return
 	}
 	files := form.File["files"]
@@ -32,22 +32,22 @@ func HandleRequest(c *gin.Context) {
 		switch ext {
 		case ".json":
 			if err := SaveJsonFile(file, filenames[i], opt.IsRowBased); err != nil {
-				c.String(http.StatusBadRequest, "upload file err: %s", err.Error())
+				c.JSON(500, result.Err.WithMsg("upload file err: "+err.Error()))
 				return
 			}
 		case ".npy":
 			if err := SaveNpyFile(file, filenames[i], opt.IsRowBased); err != nil {
-				c.String(http.StatusBadRequest, "upload file err: %s", err.Error())
+				c.JSON(500, result.Err.WithMsg("upload file err: "+err.Error()))
 				return
 			}
 		default:
-			c.String(http.StatusBadRequest, "Unsupported file: %s", filenames[i])
+			c.JSON(500, result.Err.WithMsg("Unsupported file: "+filenames[i]))
 		}
 	}
 	// 调用API执行bulkload
-	BulkLoad(opt.CollectionName, opt.PartitionName, opt.IsRowBased, filenames)
+	msg := BulkLoad(opt.CollectionName, opt.PartitionName, opt.IsRowBased, filenames)
 
-	c.String(http.StatusOK, "Uploaded successfully %d files, %v", len(files), opt)
+	c.JSON(200, result.OK.WithMsg(msg))
 }
 
 func SaveJsonFile(file *multipart.FileHeader, filename string, isRowBased bool) error {
