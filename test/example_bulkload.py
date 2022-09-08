@@ -431,25 +431,25 @@ def main():
     # show collections
     list_collections()
 
-    # do bulkload, wait all tasks finish persisting
-    rowbased_tasks = bulkload_rowbased(row_count_each_file=3000, file_count=3)
-    columnbased_json_tasks = bulkload_columnbased_json(row_count=5000)
-    columnbased_numpy_tasks = bulkload_columnbased_numpy(row_count=10000, partition_name=a_partition)
+    # # do bulkload, wait all tasks finish persisting
+    # rowbased_tasks = bulkload_rowbased(row_count_each_file=3000, file_count=3)
+    # columnbased_json_tasks = bulkload_columnbased_json(row_count=5000)
+    # columnbased_numpy_tasks = bulkload_columnbased_numpy(row_count=10000, partition_name=a_partition)
 
-    # wai until all tasks completed(completed means queryable)
-    task_ids = []
-    for task in rowbased_tasks:
-        task_ids.append(task.task_id)
-    for task in columnbased_json_tasks:
-        task_ids.append(task.task_id)
-    for task in columnbased_numpy_tasks:
-        task_ids.append(task.task_id)
-    wait_tasks_competed(task_ids)
+    # # wai until all tasks completed(completed means queryable)
+    # task_ids = []
+    # for task in rowbased_tasks:
+    #     task_ids.append(task.task_id)
+    # for task in columnbased_json_tasks:
+    #     task_ids.append(task.task_id)
+    # for task in columnbased_numpy_tasks:
+    #     task_ids.append(task.task_id)
+    # wait_tasks_competed(task_ids)
 
-    list_all_bulkload_tasks(len(rowbased_tasks) + len(columnbased_json_tasks) + len(columnbased_numpy_tasks))
+    # list_all_bulkload_tasks(len(rowbased_tasks) + len(columnbased_json_tasks) + len(columnbased_numpy_tasks))
 
-    # get the number of entities
-    get_entity_num(collection)
+    # # get the number of entities
+    # get_entity_num(collection)
 
     # # search in entire collection
     # vector = [round(random.random(), 6) for _ in range(_DIM)]
