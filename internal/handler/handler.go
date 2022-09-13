@@ -24,7 +24,6 @@ func HandleRequest(c *gin.Context) {
 		return
 	}
 	files := form.File["files"]
-	// 将上传的文件转换为npy文件保存到minio
 	filenames := make([]string, len(files))
 	for i, file := range files {
 		filenames[i] = filepath.Base(file.Filename)
@@ -44,7 +43,7 @@ func HandleRequest(c *gin.Context) {
 			c.JSON(500, result.Err.WithMsg("Unsupported file: "+filenames[i]))
 		}
 	}
-	// 调用API执行bulkload
+	// call api do bulkload
 	msg := BulkLoad(opt.CollectionName, opt.PartitionName, opt.IsRowBased, filenames)
 
 	c.JSON(200, result.OK.WithMsg(msg))
@@ -62,7 +61,7 @@ func SaveJsonFile(file *multipart.FileHeader, filename string, isRowBased bool) 
 }
 
 func SaveNpyFile(file *multipart.FileHeader, filename string, isRowBased bool) error {
-	// 将文件保存到minio
+	// save npy file to minio
 	src, err := file.Open()
 	if err != nil {
 		return err
