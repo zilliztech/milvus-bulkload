@@ -3,6 +3,9 @@ package handler
 import (
 	"bulkload/internal/config"
 	"bulkload/internal/result"
+	"bulkload/internal/util"
+	"bytes"
+	"io"
 	"mime/multipart"
 	"path/filepath"
 
@@ -39,6 +42,11 @@ func HandleRequest(c *gin.Context) {
 				c.JSON(500, result.Err.WithMsg("upload file err: "+err.Error()))
 				return
 			}
+		case ".csv":
+			if err := SaveCsvFile(file, filenames[i], opt.IsRowBased); err != nil {
+				c.JSON(500, result.Err.WithMsg("upload file err: "+err.Error()))
+				return
+			}
 		default:
 			c.JSON(500, result.Err.WithMsg("Unsupported file: "+filenames[i]))
 		}
@@ -50,7 +58,6 @@ func HandleRequest(c *gin.Context) {
 }
 
 func SaveJsonFile(file *multipart.FileHeader, filename string, isRowBased bool) error {
-	// 将json文件转换为npy文件
 	// 把文件保存到minio
 	src, err := file.Open()
 	if err != nil {
@@ -68,4 +75,17 @@ func SaveNpyFile(file *multipart.FileHeader, filename string, isRowBased bool) e
 	}
 	defer src.Close()
 	return SaveToMinio(src, config.BUCKET_NAME, filename)
+}
+
+func SaveCsvFile(file *multipart.FileHeader, filename string, isRowBased bool) error {
+	// save npy file to minio
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	csvData, _ := io.ReadAll(src)
+	jsonData := util.Csv2Json(csvData)
+	return SaveToMinio(bytes.NewReader(jsonData), config.BUCKET_NAME, filename)
 }

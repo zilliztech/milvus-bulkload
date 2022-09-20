@@ -410,26 +410,26 @@ def main():
     # create a connection
     create_connection()
 
-    # drop collection if the collection exists
-    if has_collection():
-        drop_collection()
+    # # drop collection if the collection exists
+    # if has_collection():
+    #     drop_collection()
 
-    # create collection
-    collection = create_collection()
+    # # create collection
+    # collection = create_collection()
 
-    # create a partition
-    a_partition = "part_1"
-    partition = create_partition(collection, a_partition)
+    # # create a partition
+    # a_partition = "part_1"
+    # partition = create_partition(collection, a_partition)
 
-    # specify an index type
-    create_index(collection)
+    # # specify an index type
+    # create_index(collection)
 
 
-    # load data to memory
-    load_collection(collection)
+    # # load data to memory
+    # load_collection(collection)
 
-    # show collections
-    list_collections()
+    # # show collections
+    # list_collections()
 
     # # do bulkload, wait all tasks finish persisting
     # rowbased_tasks = bulkload_rowbased(row_count_each_file=3000, file_count=3)
